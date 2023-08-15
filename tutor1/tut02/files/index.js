@@ -4,28 +4,52 @@ const fsPromise = require('fs').promises // imported /importing file
 
 const path = require('path');
 
+// method 2 to avoid call back hell
+
+const fileOps = async() => {
+    try{
+        const data = await fsPromise.readFile(path.join(__dirname, /*'files', */ 'starter.txt'),
+        'utf-8');
+        console.log(data);
+
+        await fsPromise.writeFile(path.join(__dirname,'Promisewrite.txt'),data);
+        await fsPromise.appendFile(path.join(__dirname,'PromiseWrite.txt'),'\nhello world');
+        await fsPromise.rename(path.join(__dirname,'PromiseWrite.txt'),(__dirname,'renamer.txt'));
+        // unlink for deletion
+        const newData = await fsPromise.readFile(path.join(__dirname, /*'files', */ 'renamer.txt'),
+        'utf-8');
+        console.log(newData);
+
+    }catch(err){
+        console.error(err);
+    }
+}
+
+fileOps();
+
+
 //method 1 for reading,writing in callback method 
+/* fs.readFile(path.join(__dirname,'starter.txt'),'utf8' , (err, data) => {
+    if (err) throw err;
+    console.log('data');
 
-// fs.writeFile(path.join(__dirname,'lore.txt') , 'nice to meet you' , (err) => {
-//     if (err) throw err;
-//     console.log('write complete');
+    fs.writeFile(path.join(__dirname,'lore.txt') , 'nice to meet you' , (err) => {
+    if (err) throw err;
+    console.log('write complete');
 
-//     fs.appendFile(path.join(__dirname,'reply.txt') , '\n Exploring' , (err) => {
-//         if (err) throw err;
-//         console.log('append complete'); 
+        fs.appendFile(path.join(__dirname,'reply.txt') , '\n Exploring' , (err) => {
+        if (err) throw err;
+        console.log('append complete'); 
         
-//         fs.readFile(path.join(__dirname,'starter.txt'),'utf8' , (err, data) => {
-//             if (err) throw err;
-//             console.log('data');
-
+        
             
 
    
-// })
+})
 
 
-// })
-// })
+})
+}) */
 
 // method 2 for reading files 
 
