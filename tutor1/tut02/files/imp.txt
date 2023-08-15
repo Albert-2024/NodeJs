@@ -1,0 +1,5 @@
+npm i nodemon -D
+
+npm init
+
+.gitignore
