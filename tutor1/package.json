@@ -1,5 +1,5 @@
 {
-  "name": "tutor1",
+  "name": "tut04",
   "version": "1.0.0",
   "description": "\"global\"",
   "main": "index.js",
@@ -14,6 +14,8 @@
   },
   "dependencies": {
     "date-fns": "^2.30.0",
+    "events": "^3.3.0",
+    "path": "^0.12.7",
     "uuid": "^8.3.2"
   }
 }
