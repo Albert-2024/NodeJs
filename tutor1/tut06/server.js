@@ -4,6 +4,7 @@ const app = express();
 const path = require('path');
 const cors = require('cors');
 const { logger } = require('./middleware/logEvents');
+const errHandler  = require('./middleware/errorHandler')
 const PORT = process.env.PORT || 3000;
 
 app.use(logger);
@@ -12,16 +13,15 @@ app.use(logger);
 //cross orgin resource sharing
 const whitelist = ['https://www.google.com/','http://127.0.0.1:5500','http://localhost:3000']
 const corsOption = {
-    origin: '*',
     // the commented part has some errors so i go on with * but its dangerous bcz somene can stole thee data
-
-    /* (origin, callback) => {
-        if(whitelist.indexOf(origin) !== -1){
+    // the error was resolved 
+    origin: (origin, callback) => {
+        if(whitelist.indexOf(origin) !== -1 || !origin){
             callback(null,true)
         }else{
             callback(new Error('Not allowed by cors'));
         }
-    }, */
+    },
     optionsSuccessStatus: 200
 }
 
@@ -70,6 +70,8 @@ app.get('/hello(.html)?',( req,res,next )=>{
 app.get('/*',(req,res)=>{
     res.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
 })
+
+app.use(errHandler)
 
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
