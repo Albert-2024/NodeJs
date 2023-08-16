@@ -30,45 +30,31 @@ app.use(cors(corsOption))
 
 
 app.use(express.urlencoded({extended:false}))
+
+//build in middle ware for json
 app.use(express.json())
-app.use(express.static(path.join(__dirname,'/public')));
-app.get('^/$|/index(.html)?', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'index.html'));
-});
 
-app.get('/new-page(.html)?', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'new-page.html'));
-});
-
-app.get('/old-page(.html)?', (req, res) => {
-    res.redirect(301, 'new-page.html');
-});
-
-const one = (req, res, next) => {
-     console.log('one');
-     next();
-}
-const two = (req, res, next) => {
-    console.log('two');
-    next();
-}
-const three = (req, res, next) => {
-    console.log('three');
-    res.send('finished')
-}
-
-app.get('/chain(.html)?',[one,two,three]);
+//static serve file
+app.use('/',express.static(path.join(__dirname,'/public')));
+app.use('/subdir',express.static(path.join(__dirname,'/public')));
 
 
-app.get('/hello(.html)?',( req,res,next )=>{
-    console.log('atttempted hello');
-    next()
-},(req,res)=>{
-    res.send("hello world")
-})
+//routes
+app.use('/',require('./routes/root'))
+app.use('/subdir',require('./routes/subdir'));
 
-app.get('/*',(req,res)=>{
-    res.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
+
+app.all('*',(req,res)=>{
+    res.status(404)
+    if(req.accepts('html'))
+    {
+        sendFile(path.join(__dirname, 'views', '404.html'));
+    }
+    else if (req.accepts('json')) {
+        sendFile({ error: '404 not found' });
+    }else{
+        res.type('txt').send('404 not found')
+    }
 })
 
 app.use(errHandler)
